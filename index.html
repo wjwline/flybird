@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		canvas {
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="cvs" width="500" height="500"></canvas>
+	<script type="text/javascript" src="js/util.js"></script>
+	<script type="text/javascript" src="js/sky.js"></script>
+	<script type="text/javascript" src="js/bird.js"></script>
+	<script type="text/javascript" src="js/land.js"></script>
+	<script type="text/javascript" src="js/pipe.js"></script>
+	<script type="text/javascript" src="js/gameScene.js"></script>
+	<script type="text/javascript" src="js/overScene.js"></script>
+	<script type="text/javascript">
+		var cvs = document.getElementById("cvs");
+		var ctx = cvs.getContext("2d");
+		loadImg({
+			bird:"img/bird.png",
+			land:"img/land.png",
+			pipeDown:"img/pipeDown.png",
+			pipeUp:"img/pipeUp.png",
+			sky:"img/sky.png",
+		},function(img) {
+			cvs.width = img.sky.width;
+			cvs.height = img.sky.height;
+
+			//创建一个游戏场景对象
+			var gameScene = getGameScene(ctx,img);
+			//游戏场景是否继续
+			var isRun = true;
+			//为监听者添加听众
+			gameScene.addListener(function() {
+				isRun = false;
+				overScene.draw();
+			})
+
+			//创建一个游戏结束对象
+			var overScene = getOverScene(ctx);
+
+			// var timer = setInterval(function() {
+			// 	gameScene.draw();
+			// },50)
+			
+			//利用请求动画帧函数
+			(function fn() {
+				gameScene.draw();
+				if(isRun) {
+					requestAnimationFrame(fn);
+				}
+			}());
+
+		});
+	</script>
+</body>
+</html>
